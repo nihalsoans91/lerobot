@@ -17,6 +17,7 @@
 import base64
 import json
 import logging
+logging.getLogger().setLevel(logging.INFO)
 import time
 from dataclasses import dataclass, field
 
@@ -59,6 +60,7 @@ class LeKiwiHost:
 
 @draccus.wrap()
 def main(cfg: LeKiwiServerConfig):
+    
     logging.info("Configuring LeKiwi")
     robot = LeKiwi(cfg.robot)
 
@@ -80,7 +82,10 @@ def main(cfg: LeKiwiServerConfig):
             try:
                 msg = host.zmq_cmd_socket.recv_string(zmq.NOBLOCK)
                 data = dict(json.loads(msg))
-                _action_sent = robot.send_action(data)
+                try:
+                    _action_sent = robot.send_action(data)
+                except Exception as e:
+                    logging.error("Unbale to send action %s", e)
                 last_cmd_time = time.time()
                 watchdog_active = False
             except zmq.Again:
@@ -95,7 +100,10 @@ def main(cfg: LeKiwiServerConfig):
                     f"Command not received for more than {host.watchdog_timeout_ms} milliseconds. Stopping the base."
                 )
                 watchdog_active = True
-                robot.stop_base()
+                # robot.stop_base()
+                logging.warning(
+                    f"Not Stopping the base."
+                )
 
             last_observation = robot.get_observation()
 

@@ -17,7 +17,9 @@
 import base64
 import json
 import logging
+logging.getLogger().setLevel(logging.INFO)
 from functools import cached_property
+
 from typing import Any
 
 import cv2
@@ -124,6 +126,7 @@ class LeKiwiClient(Robot):
         self.zmq_context = zmq.Context()
         self.zmq_cmd_socket = self.zmq_context.socket(zmq.PUSH)
         zmq_cmd_locator = f"tcp://{self.remote_ip}:{self.port_zmq_cmd}"
+        logging.info(zmq_cmd_locator)
         self.zmq_cmd_socket.connect(zmq_cmd_locator)
         self.zmq_cmd_socket.setsockopt(zmq.CONFLATE, 1)
 
