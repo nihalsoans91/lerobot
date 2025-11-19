@@ -25,7 +25,7 @@ from lerobot.utils.visualization_utils import init_rerun, log_rerun_data
 FPS = 30
 
 # Create the robot and teleoperator configurations
-robot_config = LeKiwiClientConfig(remote_ip="192.168.2.133", id="ni_kiwi")
+robot_config = LeKiwiClientConfig(remote_ip="192.168.2.131", id="ni_kiwi")
 # teleop_arm_config = SO100LeaderConfig(port="/dev/ttyACM1", id="my_awesome_kiwi")
 keyboard_config = KeyboardTeleopConfig(id="my_laptop_keyboard")
 
@@ -41,7 +41,7 @@ robot.connect()
 keyboard.connect()
 
 # Init rerun viewer
-# init_rerun(session_name="lekiwi_teleop")
+init_rerun(session_name="lekiwi_teleop")
 
 if not keyboard.is_connected:
     raise ValueError("Robot or teleop is not connected!")
@@ -70,6 +70,6 @@ while True:
 
 
     # Visualize
-    # log_rerun_data(observation=observation, action=action)
+    log_rerun_data(observation=observation, action=action)
 
     busy_wait(max(1.0 / FPS - (time.perf_counter() - t0), 0.0))
